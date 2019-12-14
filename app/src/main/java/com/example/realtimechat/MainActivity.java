@@ -1,11 +1,12 @@
 package com.example.realtimechat;
 
+import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Map<String,Object> map = new HashMap<String,Object>();
                 map.put(room_name.getText().toString(),"");
+                room_name.setText("");
                 root.updateChildren(map);
             }
         });
@@ -100,8 +102,12 @@ public class MainActivity extends AppCompatActivity {
     private void request_user_name() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter Name");
+        builder.setIcon(R.drawable.user_circle);
         final EditText input_field = new EditText(this);
-        builder.setView(input_field);
+        int margin = dpToPx(20);
+        input_field.setSingleLine();
+        input_field.setHint("Your name");
+        builder.setView(input_field, margin, 0, margin, 0);
         builder.setPositiveButton("OK ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -135,5 +141,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
             } });
         builder.show();
+    }
+
+    public static int dpToPx(int dp){
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 }
