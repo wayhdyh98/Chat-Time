@@ -3,6 +3,7 @@ package com.example.realtimechat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
                 Map<String,Object> map = new HashMap<String,Object>();
                 map.put(room_name.getText().toString(),"");
                 root.updateChildren(map);
-
             }
         });
 
@@ -80,10 +81,18 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent I = new Intent(getApplicationContext(),ChatRoom.class);
-                I.putExtra("room_name",((TextView)view).getText().toString());
-                I.putExtra("user_name",name);
+                Intent I = new Intent(getApplicationContext(), ChatRoom.class);
+                I.putExtra("room_name", ((TextView)view).getText().toString());
+                I.putExtra("user_name", name);
                 startActivity(I);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                delete_dialog(view);
+                return true;
             }
         });
     }
@@ -107,6 +116,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.setCancelable(false);
+        builder.show();
+    }
+
+    private void delete_dialog(final View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Are you sure want to delete this room?");
+        builder.setIcon(R.drawable.trash);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                String rn = ((TextView)view).getText().toString();
+                DatabaseReference dR = FirebaseDatabase.getInstance().getReference().child(rn);
+                dR.removeValue();
+                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
+            } });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
+            } });
         builder.show();
     }
 }
