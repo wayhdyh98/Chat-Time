@@ -1,102 +1,72 @@
 package com.example.realtimechat;
 
-import androidx.annotation.RestrictTo;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import com.example.realtimechat.fragments.MainFragment;
+import com.example.realtimechat.fragments.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
-
-    private Button add_room;
-    private EditText room_name;
-    private ListView listView;
-    private String name;
-    private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
-    private ArrayAdapter<String> arrayAdapter;
-    private ArrayList<String> list_of_rooms = new ArrayList();
+    public String name;
+    private Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        add_room = (Button)findViewById(R.id.btnAdd_room);
-        room_name = (EditText)findViewById(R.id.etNeme_room);
-        listView = (ListView)findViewById(R.id.listView);
-
-        arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_of_rooms);
-        listView.setAdapter(arrayAdapter);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         request_user_name();
-        add_room.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Map<String,Object> map = new HashMap<String,Object>();
-                map.put(room_name.getText().toString(),"");
-                room_name.setText("");
-                root.updateChildren(map);
-            }
-        });
+    }
 
-        root.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Set<String> set = new HashSet<String>();
-                Iterator i = dataSnapshot.getChildren().iterator();
-                while (i.hasNext()){
-                    set.add(((DataSnapshot)i.next()).getKey());
-                }
-                list_of_rooms.clear();
-                list_of_rooms.addAll(set);
-                arrayAdapter.notifyDataSetChanged();
-            }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation, menu);
+        return true;
+    }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) { }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent I = new Intent(getApplicationContext(), ChatRoom.class);
-                I.putExtra("room_name", ((TextView)view).getText().toString());
-                I.putExtra("user_name", name);
-                startActivity(I);
-            }
-        });
+        if (id == R.id.action_settings) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            openFragment(new SettingsFragment());
+            return true;
+        } else if (id == android.R.id.home) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            MainFragment main = new MainFragment();
+            main.setArguments(bundle);
+            openFragment(main);
+            return true;
+        }
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                delete_dialog(view);
-                return true;
-            }
-        });
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openFragment(Fragment fragment) {
+        openFragment(fragment, false);
+    }
+
+    private void openFragment(Fragment fragment, boolean addToBackstack) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.replace(R.id.fragment_container, fragment);
+        if (addToBackstack)
+            transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void request_user_name() {
@@ -112,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 name = input_field.getText().toString();
+                bundle.putString("name", name);
+                MainFragment main = new MainFragment();
+                main.setArguments(bundle);
+                openFragment(main);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -125,25 +99,8 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void delete_dialog(final View view) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Are you sure want to delete this room?");
-        builder.setIcon(R.drawable.trash);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String rn = ((TextView)view).getText().toString();
-                DatabaseReference dR = FirebaseDatabase.getInstance().getReference().child(rn);
-                dR.removeValue();
-                Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_LONG).show();
-            } });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), "OK", Toast.LENGTH_LONG).show();
-            } });
-        builder.show();
-    }
-
     public static int dpToPx(int dp){
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
+
 }

@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Realtimechat</string>
+
+    <!-- Slide 1 -->
+    <string name="slide_1_title">Communicate</string>
+    <string name="slide_1_desc">some fiture for ghibah</string>
+
+    <!-- Slide 2 -->
+    <string name="slide_2_title">ChattTime</string>
+    <string name="slide_2_desc">Bahas aja segala Hal</string>
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+
+    <string name="widgets">Setting</string>
+    <string name="title_switch_preference">Hide Room Field</string>
+    <string name="summary_switch_preference">Make the field become invisible</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"></activity>
+        <activity android:name=".PageActivity"></activity>
         <activity android:name=".ChatRoom" />
         <activity android:name=".SplashActivity">
             <intent-filter>

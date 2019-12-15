@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/widgets">
+        <SwitchPreferenceCompat
+            android:key="switch"
+            android:title="@string/title_switch_preference"
+            android:summary="@string/summary_switch_preference"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
