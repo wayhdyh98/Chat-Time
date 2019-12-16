@@ -22,7 +22,7 @@ import java.util.Map;
 public class ChatRoom extends AppCompatActivity {
     private Button btn_send_msg;
     private EditText input_msg;
-    private TextView chat_conversation;
+    private TextView chat_conversation, room_title;
     private String user_name ,room_name;
     private DatabaseReference root;
     private String temp_key;
@@ -36,9 +36,11 @@ public class ChatRoom extends AppCompatActivity {
         btn_send_msg = (Button)findViewById(R.id.button);
         input_msg = (EditText)findViewById(R.id.editText);
         chat_conversation = (TextView)findViewById(R.id.textView);
+        room_title = (TextView)findViewById(R.id.textView4);
         user_name = getIntent().getExtras().get("user_name").toString();
         room_name = getIntent().getExtras().get("room_name").toString();
 
+        room_title.setText("Room - " + room_name);
         root = FirebaseDatabase.getInstance().getReference().child(room_name);
 
         btn_send_msg.setOnClickListener(new View.OnClickListener() {

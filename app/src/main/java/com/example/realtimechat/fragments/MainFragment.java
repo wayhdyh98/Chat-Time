@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -84,7 +85,17 @@ public class MainFragment extends Fragment {
         listView = (ListView)view.findViewById(R.id.listView);
         name = getArguments().getString("name");
 
-        arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, list_of_rooms);
+        arrayAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, list_of_rooms){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                textView.setTextColor(Color.WHITE);
+
+                return view;
+            }
+        };
+
         listView.setAdapter(arrayAdapter);
 
         add_room.setOnClickListener(new View.OnClickListener() {

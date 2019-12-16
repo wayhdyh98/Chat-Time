@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 name = input_field.getText().toString();
+                if (name.equals("")) {
+                    dialogInterface.cancel();
+                    request_user_name();
+                }
                 bundle.putString("name", name);
                 MainFragment main = new MainFragment();
                 main.setArguments(bundle);

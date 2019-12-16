@@ -14,27 +14,29 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="195dp"
-            android:layout_height="167dp"
+            android:layout_width="126dp"
+            android:layout_height="149dp"
             app:srcCompat="@drawable/message" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="@string/slide_2_title"
-            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:textColor="#F44336"
             android:textSize="@dimen/slide_title"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:paddingLeft="@dimen/desc_padding"
             android:paddingRight="@dimen/desc_padding"
             android:text="@string/slide_2_desc"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
+            android:textColor="#000000"
             android:textSize="@dimen/slide_desc" />
 
     </LinearLayout>
